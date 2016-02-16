@@ -10,20 +10,18 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/coordinatorLayout">
-    <!--app:layout_behavior="com.example.tdk10.toolbar.behavior.SmartToolbarBehavior">-->
-        <!--app:layout_behavior="@string/appbar_scrolling_view_behavior">-->
 
         <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/appBarLayout"
+            android:background="#1c7b3a"
             app:layout_behavior="com.example.tdk10.toolbar.behavior.Behavior2">
 
             <android.support.v7.widget.Toolbar
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/toolbar"
-                app:layout_scrollFlags="scroll|enterAlways">
+                android:id="@+id/toolbar">
 
             </android.support.v7.widget.Toolbar>
         </android.support.design.widget.AppBarLayout>
@@ -35,6 +33,9 @@
             app:layout_behavior="com.example.tdk10.toolbar.behavior.ScrollingBehavior">
 
         </android.support.v7.widget.RecyclerView>
+
+
+
     </android.support.design.widget.CoordinatorLayout>
 
 </RelativeLayout>

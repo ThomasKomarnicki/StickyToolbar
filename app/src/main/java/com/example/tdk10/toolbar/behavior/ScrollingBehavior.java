@@ -34,6 +34,7 @@ public class ScrollingBehavior extends CoordinatorLayout.Behavior {
                                           View dependency) {
 //        Log.d(TAG, "dependent view changed");
         updateOffset(parent, child, dependency);
+        Log.d(TAG, "offset scroll view to "+child.getTop());
         return false;
     }
 
