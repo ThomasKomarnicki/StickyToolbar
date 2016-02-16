@@ -22,6 +22,8 @@ public class Behavior2 extends CoordinatorLayout.Behavior<AppBarLayout> {
      * and appBarLayout.getHeight()
      */
     private int scrollingContentOffset;
+    private boolean manual = true;
+    private int consumedAmount = 0;
     private boolean dirty;
 
     /**
@@ -67,13 +69,28 @@ public class Behavior2 extends CoordinatorLayout.Behavior<AppBarLayout> {
         // if we are consuming the scroll, this the scrolling view is moving and needs to be updated
         if(consumed[1] != 0) {
             coordinatorLayout.dispatchDependentViewsChanged(child);
+
+
+            if(consumedAmount < 30){
+                Log.d(TAG, "unconsuming to allow scroll");
+                consumedAmount += consumed[1];
+                consumed[1] = 0;
+            }
         }
+
+
+
+//        if(target.getTop() == coordinatorLayout.getTop() && manual){
+//            manual = false;
+//            Log.d(TAG, "manually scrolling 30 px");
+//            coordinatorLayout.onNestedScroll(target,0,0,0,30);
+//        }
 
         /* for positioning the appBar */
 
-//        float appBarTranslation = child.getTranslationY();
-//        float newTranslation = MathUtils.constrain(appBarTranslation - dy,-child.getHeight(),coordinatorLayout.getTop());
-//        child.setTranslationY(newTranslation);
+        float appBarTranslation = child.getTranslationY();
+        float newTranslation = MathUtils.constrain(appBarTranslation - dy,-child.getHeight(),coordinatorLayout.getTop());
+        child.setTranslationY(newTranslation);
     }
 
 //    @Override
