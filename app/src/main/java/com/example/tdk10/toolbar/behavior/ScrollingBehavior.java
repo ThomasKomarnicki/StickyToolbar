@@ -3,7 +3,6 @@ package com.example.tdk10.toolbar.behavior;
 import android.content.Context;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -34,7 +33,7 @@ public class ScrollingBehavior extends CoordinatorLayout.Behavior {
                                           View dependency) {
 //        Log.d(TAG, "dependent view changed");
         updateOffset(parent, child, dependency);
-        Log.d(TAG, "offset scroll view to "+child.getTop());
+//        Log.d(TAG, "offset scroll view to "+child.getTop());
         return false;
     }
 

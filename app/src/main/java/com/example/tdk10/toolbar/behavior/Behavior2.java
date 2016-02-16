@@ -1,8 +1,11 @@
 package com.example.tdk10.toolbar.behavior;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.animation.ValueAnimatorCompat;
+import android.support.v7.widget.ViewUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -14,14 +17,24 @@ public class Behavior2 extends CoordinatorLayout.Behavior<AppBarLayout> {
 
     private static final String TAG = "Behavior2";
 
-    private int scrollingContentOffset = 196;
+    /**
+     * how much the scrolling view's top bound should be offset by, always between parent.getTop()
+     * and appBarLayout.getHeight()
+     */
+    private int scrollingContentOffset;
     private boolean dirty;
+
+    /**
+     * animates appBarLayout hidden or close after scroll is released
+     */
+    private ValueAnimator valueAnimator;
 
     public Behavior2() {
     }
 
     public Behavior2(Context context, AttributeSet attrs) {
         super(context, attrs);
+
     }
 
 
@@ -30,17 +43,13 @@ public class Behavior2 extends CoordinatorLayout.Behavior<AppBarLayout> {
     }
 
     @Override
-    public void onNestedScroll(CoordinatorLayout coordinatorLayout, AppBarLayout child, View target, int dxConsumed, int dyConsumed, int dxUnconsumed, int dyUnconsumed) {
-        super.onNestedScroll(coordinatorLayout, child, target, dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed);
-
-
-
-
+    public boolean onLayoutChild(CoordinatorLayout parent, AppBarLayout child, int layoutDirection) {
+        scrollingContentOffset = child.getHeight();
+        return super.onLayoutChild(parent, child, layoutDirection);
     }
 
     @Override
     public boolean onStartNestedScroll(CoordinatorLayout coordinatorLayout, AppBarLayout child, View directTargetChild, View target, int nestedScrollAxes) {
-
         return true;
     }
 
@@ -48,14 +57,40 @@ public class Behavior2 extends CoordinatorLayout.Behavior<AppBarLayout> {
     public void onNestedPreScroll(CoordinatorLayout coordinatorLayout, AppBarLayout child, View target, int dx, int dy, int[] consumed) {
         super.onNestedPreScroll(coordinatorLayout, child, target, dx, dy, consumed);
 
-                Log.d(TAG, "pre scroll dy "+dy);
+        /* for setting the scroll view offset*/
+        Log.d(TAG, "pre scroll dy "+dy);
         final int scrollingContentBefore = scrollingContentOffset;
-        scrollingContentOffset = MathUtils.constrain(scrollingContentOffset - dy,0,child.getHeight());
+        scrollingContentOffset = MathUtils.constrain(scrollingContentOffset - dy,coordinatorLayout.getTop(),child.getHeight());
         consumed[1] = scrollingContentBefore - scrollingContentOffset;
 
 //        dirty = true;
-        coordinatorLayout.dispatchDependentViewsChanged(child);
+        // if we are consuming the scroll, this the scrolling view is moving and needs to be updated
+        if(consumed[1] != 0) {
+            coordinatorLayout.dispatchDependentViewsChanged(child);
+        }
+
+        /* for positioning the appBar */
+
+//        float appBarTranslation = child.getTranslationY();
+//        float newTranslation = MathUtils.constrain(appBarTranslation - dy,-child.getHeight(),coordinatorLayout.getTop());
+//        child.setTranslationY(newTranslation);
     }
+
+//    @Override
+//    public void onStopNestedScroll(CoordinatorLayout coordinatorLayout, AppBarLayout child, View target) {
+//        super.onStopNestedScroll(coordinatorLayout, child, target);
+//
+//        if(valueAnimator == null){
+//            valueAnimator = new ValueAnimator();
+//        }
+//    }
+//
+//    @Override
+//    public boolean onNestedFling(CoordinatorLayout coordinatorLayout, AppBarLayout child, View target, float velocityX, float velocityY, boolean consumed) {
+//        return super.onNestedFling(coordinatorLayout, child, target, velocityX, velocityY, consumed);
+//
+//        // todo on fling
+//    }
 
     @Override
     public boolean isDirty(CoordinatorLayout parent, AppBarLayout child) {
