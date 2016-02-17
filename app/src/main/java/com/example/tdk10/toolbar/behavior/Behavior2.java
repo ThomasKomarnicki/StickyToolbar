@@ -22,9 +22,10 @@ public class Behavior2 extends CoordinatorLayout.Behavior<AppBarLayout> {
      * and appBarLayout.getHeight()
      */
     private int scrollingContentOffset;
-    private boolean manual = true;
-    private int consumedAmount = 0;
     private boolean dirty;
+
+    private boolean isStarted;
+    private int consumedStartAmount = 0;
 
     /**
      * animates appBarLayout hidden or close after scroll is released
@@ -52,6 +53,7 @@ public class Behavior2 extends CoordinatorLayout.Behavior<AppBarLayout> {
 
     @Override
     public boolean onStartNestedScroll(CoordinatorLayout coordinatorLayout, AppBarLayout child, View directTargetChild, View target, int nestedScrollAxes) {
+        isStarted = true;
         return true;
     }
 
@@ -59,38 +61,31 @@ public class Behavior2 extends CoordinatorLayout.Behavior<AppBarLayout> {
     public void onNestedPreScroll(CoordinatorLayout coordinatorLayout, AppBarLayout child, View target, int dx, int dy, int[] consumed) {
         super.onNestedPreScroll(coordinatorLayout, child, target, dx, dy, consumed);
 
-        /* for setting the scroll view offset*/
-        Log.d(TAG, "pre scroll dy "+dy);
-        final int scrollingContentBefore = scrollingContentOffset;
-        scrollingContentOffset = MathUtils.constrain(scrollingContentOffset - dy,coordinatorLayout.getTop(),child.getHeight());
-        consumed[1] = scrollingContentBefore - scrollingContentOffset;
 
-//        dirty = true;
-        // if we are consuming the scroll, this the scrolling view is moving and needs to be updated
-        if(consumed[1] != 0) {
-            coordinatorLayout.dispatchDependentViewsChanged(child);
-
-
-            if(consumedAmount < 30){
-                Log.d(TAG, "unconsuming to allow scroll");
-                consumedAmount += consumed[1];
-                consumed[1] = 0;
+        if(isStarted){
+            if(Math.abs(dy) > 28){
+                isStarted = false;
             }
         }
 
 
+        /* for setting the scroll view offset*/
+        Log.d(TAG, "pre scroll dy "+dy);
+//        final int scrollingContentBefore = scrollingContentOffset;
+//        scrollingContentOffset = MathUtils.constrain(scrollingContentOffset - dy,coordinatorLayout.getTop(),child.getHeight());
+//        consumed[1] = scrollingContentBefore - scrollingContentOffset;
 
-//        if(target.getTop() == coordinatorLayout.getTop() && manual){
-//            manual = false;
-//            Log.d(TAG, "manually scrolling 30 px");
-//            coordinatorLayout.onNestedScroll(target,0,0,0,30);
+//        dirty = true;
+        // if we are consuming the scroll, this the scrolling view is moving and needs to be updated
+//        if(consumed[1] != 0) {
+//            coordinatorLayout.dispatchDependentViewsChanged(child);
 //        }
 
         /* for positioning the appBar */
 
-        float appBarTranslation = child.getTranslationY();
-        float newTranslation = MathUtils.constrain(appBarTranslation - dy,-child.getHeight(),coordinatorLayout.getTop());
-        child.setTranslationY(newTranslation);
+//        float appBarTranslation = child.getTranslationY();
+//        float newTranslation = MathUtils.constrain(appBarTranslation - dy,-child.getHeight(),coordinatorLayout.getTop());
+//        child.setTranslationY(newTranslation);
     }
 
 //    @Override
